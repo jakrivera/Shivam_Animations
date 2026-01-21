@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Will You Be My Valentine?</title>
+	<style>
+	body {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		margin: 0;
+		background-color: #f9e3e3;
+		font-family: 'Arial', sans-serif;
+		flex-direction: column;
+	}
+	.container {
+		text-align: center;
+	}
+	h1 {
+		font-size: 2.5em;
+		color: #d32f2f;
+	}
+	.buttons {
+		margin-top: 20px;
+	}
+	.yes-button {
+		font-size: 1.5em;
+		padding: 10px 20px;
+		margin-right: 10px;
+		background-color: #4caf50;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+	.no-button {
+		font-size: 1.5em;
+		padding: 10px 20px;
+		background-color: #f44336;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+	.gif_container img {
+		max-width: 100%;
+		height: auto;
+		border-radius: 10px;
+		margin-top: 20px;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Will you be my Valentine?</h1>
+		<div class="buttons">
+			<button class="yes-button" onclick="handleYesClick()">Yes</button>
+			<button class="no-button" onclick="handleNoClick()">No</button>
+		</div>
+		<div class="gif_container">
+			<img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbW5lenZyZHI5OXM2eW95b3pmMG40cWVrMDhtNjVuM3A4dGNxa2g2dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/VM1fcpu2bKs1e2Kdbj/giphy.gif" alt="Cute GIF">
+		</div>
+	</div>
+
+	<div style="margin-top:14px;text-align:center">
+		<button id="playBtn" style="padding:8px 12px;border-radius:8px;border:none;background:#ff6b9a;color:#fff;cursor:pointer">Play Music</button>
+	</div>
+
+	<audio id="song" src="Naal%20Naal-128kbps.mp3" preload="auto" loop></audio>
+
+	<script>
+	const messages = [
+		"Are you sure?",
+		"Really sure??",
+		"Are you positive?",
+		"Pookie please...",
+		"Just think about it!",
+		"If you say no, I will be really sad...",
+		"I will be very sad...",
+		"I will be very very very sad...",
+		"Ok fine, I will stop asking...",
+		"Just kidding, say yes please! ❤️"
+	];
+
+	let messageIndex = 0;
+
+	function handleNoClick() {
+		const noButton = document.querySelector('.no-button');
+		const yesButton = document.querySelector('.yes-button');
+		noButton.textContent = messages[messageIndex];
+		messageIndex = (messageIndex + 1) % messages.length;
+		const currentSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
+		yesButton.style.fontSize = `${currentSize * 1.5}px`;
+	}
+
+	function handleYesClick() {
+		window.location.href = "memory_yes_page.html";
+	}
+
+// Audio controls: fade-in on first interaction and play/pause toggle
+(function(){
+	const song = document.getElementById('song');
+	const playBtn = document.getElementById('playBtn');
+	song.volume = 0;
+	let playing = false;
+
+	async function fadePlay(){
+		try{
+			await song.play();
+			playing = true;
+			playBtn.textContent = 'Pause Music';
+			let vol = 0; const target = 0.85; const steps = 40; const step = target/steps;
+			const t = setInterval(()=>{ vol = Math.min(target, vol+step); song.volume = vol; if(vol>=target) clearInterval(t); }, 100);
+		}catch(e){ /* ignore autoplay errors */ }
+	}
+
+	function pauseMusic(){ song.pause(); playing = false; playBtn.textContent = 'Play Music'; }
+
+	playBtn.addEventListener('click', ()=>{ if(!playing) fadePlay(); else pauseMusic(); });
+
+	// ensure user interaction starts audio on restrictive browsers
+	const startHandler = ()=>{ if(!playing) fadePlay(); window.removeEventListener('pointerdown', startHandler); };
+	window.addEventListener('pointerdown', startHandler, {once:true});
+})();
+	</script>
+</body>
+</html>
+
